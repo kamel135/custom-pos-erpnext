@@ -1,0 +1,19 @@
+{
+ "content": null,
+ "creation": "2024-01-01",
+ "doctype": "Page",
+ "module": "Custom Pos",
+ "name": "advanced-pos",
+ "owner": "Administrator",
+ "page_name": "Advanced POS",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales User"
+  }
+ ],
+ "standard": "Yes",
+ "title": "Advanced POS"
+}

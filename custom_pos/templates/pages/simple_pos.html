@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant POS System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .pos-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Left Panel */
+        .products-panel {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        /* Categories */
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .category-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .category-btn.active {
+            background: #2196F3;
+            color: white;
+        }
+        
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .product-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #2196F3;
+        }
+        
+        .product-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .product-price {
+            color: #2196F3;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        /* Right Panel - Cart */
+        .cart-panel {
+            width: 400px;
+            background: #1976D2;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cart-header {
+            padding: 20px;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .order-types {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .order-type-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: transparent;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .order-type-btn.active {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+        }
+        
+        .customer-section {
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .customer-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .cart-items {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.7;
+        }
+        
+        .empty-cart i {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .cart-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .qty-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .cart-footer {
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .totals {
+            margin-bottom: 20px;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .total-row.grand-total {
+            font-size: 24px;
+            font-weight: bold;
+            padding-top: 10px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .btn-action {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-pay {
+            grid-column: 1 / -1;
+            background: #4CAF50;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .btn-pay:hover {
+            background: #45a049;
+        }
+        
+        .btn-clear {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .btn-discount {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="pos-container">
+        <!-- Products Panel -->
+        <div class="products-panel">
+            <div class="header">
+                <h2><i class="fas fa-store"></i> نظام نقاط البيع</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="ابحث عن منتج..." id="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <!-- Categories -->
+            <div class="categories">
+                <button class="category-btn active" onclick="filterCategory('all')">
+                    <i class="fas fa-th"></i> الكل
+                </button>
+                <button class="category-btn" onclick="filterCategory('meals')">
+                    <i class="fas fa-hamburger"></i> وجبات
+                </button>
+                <button class="category-btn" onclick="filterCategory('drinks')">
+                    <i class="fas fa-coffee"></i> مشروبات
+                </button>
+                <button class="category-btn" onclick="filterCategory('sides')">
+                    <i class="fas fa-drumstick-bite"></i> أطباق جانبية
+                </button>
+                <button class="category-btn" onclick="filterCategory('desserts')">
+                    <i class="fas fa-ice-cream"></i> حلويات
+                </button>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Cart Panel -->
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h3><i class="fas fa-shopping-cart"></i> السلة</h3>
+                <div class="order-types">
+                    <button class="order-type-btn active" onclick="setOrderType('dine-in')">
+                        <i class="fas fa-utensils"></i> محلي
+                    </button>
+                    <button class="order-type-btn" onclick="setOrderType('takeaway')">
+                        <i class="fas fa-shopping-bag"></i> سفري
+                    </button>
+                    <button class="order-type-btn" onclick="setOrderType('delivery')">
+                        <i class="fas fa-motorcycle"></i> توصيل
+                    </button>
+                </div>
+            </div>
+            
+            <div class="customer-section">
+                <input type="text" class="customer-input" placeholder="اسم العميل أو رقم الهاتف...">
+            </div>
+            
+            <div class="cart-items" id="cart-items">
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-basket"></i>
+                    <p>السلة فارغة</p>
+                </div>
+            </div>
+            
+            <div class="cart-footer">
+                <div class="totals">
+                    <div class="total-row">
+                        <span>المجموع الفرعي:</span>
+                        <span id="subtotal">0 جنيه</span>
+                    </div>
+                    <div class="total-row">
+                        <span>الضريبة (14%):</span>
+                        <span id="tax">0 جنيه</span>
+                    </div>
+                    <div class="total-row">
+                        <span>الخصم:</span>
+                        <span id="discount">0 جنيه</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>الإجمالي:</span>
+                        <span id="total">0 جنيه</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-action btn-clear" onclick="clearCart()">
+                        <i class="fas fa-trash"></i> مسح
+                    </button>
+                    <button class="btn-action btn-discount" onclick="applyDiscount()">
+                        <i class="fas fa-percent"></i> خصم
+                    </button>
+                    <button class="btn-action btn-pay" onclick="processPayment()">
+                        <i class="fas fa-credit-card"></i> الدفع
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Products data
+        const products = [
+            // Meals
+            { id: 1, name: 'برجر لحم', price: 35, category: 'meals', icon: '🍔' },
+            { id: 2, name: 'برجر دجاج', price: 32, category: 'meals', icon: '🍗' },
+            { id: 3, name: 'بيتزا مارجريتا', price: 45, category: 'meals', icon: '🍕' },
+            { id: 4, name: 'بيتزا بيبروني', price: 55, category: 'meals', icon: '🍕' },
+            { id: 5, name: 'شاورما لحم', price: 25, category: 'meals', icon: '🌯' },
+            { id: 6, name: 'شاورما دجاج', price: 22, category: 'meals', icon: '🌯' },
+            { id: 7, name: 'كباب', price: 40, category: 'meals', icon: '🍖' },
+            { id: 8, name: 'كفتة', price: 38, category: 'meals', icon: '🍖' },
+            
+            // Drinks
+            { id: 9, name: 'بيبسي', price: 10, category: 'drinks', icon: '🥤' },
+            { id: 10, name: 'سفن أب', price: 10, category: 'drinks', icon: '🥤' },
+            { id: 11, name: 'عصير برتقال', price: 15, category: 'drinks', icon: '🧃' },
+	                { id: 12, name: 'عصير مانجو', price: 18, category: 'drinks', icon: '🧃' },
+            { id: 13, name: 'ماء', price: 5, category: 'drinks', icon: '💧' },
+            { id: 14, name: 'قهوة', price: 12, category: 'drinks', icon: '☕' },
+            { id: 15, name: 'شاي', price: 8, category: 'drinks', icon: '🍵' },
+            
+            // Sides
+            { id: 16, name: 'بطاطس محمرة', price: 15, category: 'sides', icon: '🍟' },
+            { id: 17, name: 'حلقات البصل', price: 18, category: 'sides', icon: '🧅' },
+            { id: 18, name: 'سلطة خضراء', price: 20, category: 'sides', icon: '🥗' },
+            { id: 19, name: 'سلطة سيزر', price: 25, category: 'sides', icon: '🥗' },
+            { id: 20, name: 'خبز بالثوم', price: 12, category: 'sides', icon: '🥖' },
+            
+            // Desserts
+            { id: 21, name: 'آيس كريم', price: 20, category: 'desserts', icon: '🍨' },
+            { id: 22, name: 'كيك شوكولاتة', price: 25, category: 'desserts', icon: '🍰' },
+            { id: 23, name: 'تشيز كيك', price: 30, category: 'desserts', icon: '🍰' },
+            { id: 24, name: 'دونات', price: 15, category: 'desserts', icon: '🍩' },
+            { id: 25, name: 'براوني', price: 22, category: 'desserts', icon: '🟫' }
+        ];
+        
+        let cart = [];
+        let currentCategory = 'all';
+        let orderType = 'dine-in';
+        let discountAmount = 0;
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts();
+            updateCart();
+            
+            // Search functionality
+            document.getElementById('search-input').addEventListener('input', function(e) {
+                searchProducts(e.target.value);
+            });
+        });
+        
+        // Display products
+        function displayProducts(category = 'all') {
+            const grid = document.getElementById('products-grid');
+            const filteredProducts = category === 'all' 
+                ? products 
+                : products.filter(p => p.category === category);
+            
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" onclick="addToCart(${product.id})">
+                    <div class="product-icon">${product.icon}</div>
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">${product.price} جنيه</div>
+                </div>
+            `).join('');
+        }
+        
+        // Search products
+        function searchProducts(searchTerm) {
+            const grid = document.getElementById('products-grid');
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            grid.innerHTML = filtered.map(product => `
+                <div class="product-card" onclick="addToCart(${product.id})">
+                    <div class="product-icon">${product.icon}</div>
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">${product.price} جنيه</div>
+                </div>
+            `).join('');
+        }
+        
+        // Filter by category
+        function filterCategory(category) {
+            currentCategory = category;
+            displayProducts(category);
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Add to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+            updateCart();
+            
+            // Visual feedback
+            event.target.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                event.target.style.transform = '';
+            }, 100);
+        }
+        
+        // Update cart display
+        function updateCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-basket"></i>
+                        <p>السلة فارغة</p>
+                    </div>
+                `;
+            } else {
+                cartItemsDiv.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price} جنيه</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="decreaseQuantity(${item.id})">-</button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button class="qty-btn" onclick="increaseQuantity(${item.id})">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateTotals();
+        }
+        
+        // Update totals
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.14;
+            const total = subtotal + tax - discountAmount;
+            
+            document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)} جنيه`;
+            document.getElementById('tax').textContent = `${tax.toFixed(2)} جنيه`;
+            document.getElementById('discount').textContent = `${discountAmount.toFixed(2)} جنيه`;
+            document.getElementById('total').textContent = `${total.toFixed(2)} جنيه`;
+        }
+        
+        // Quantity controls
+        function increaseQuantity(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += 1;
+                updateCart();
+            }
+        }
+        
+        function decreaseQuantity(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity -= 1;
+                } else {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+                updateCart();
+            }
+        }
+        
+        // Clear cart
+        function clearCart() {
+            if (confirm('هل أنت متأكد من مسح السلة؟')) {
+                cart = [];
+                discountAmount = 0;
+                updateCart();
+            }
+        }
+        
+        // Set order type
+        function setOrderType(type) {
+            orderType = type;
+            document.querySelectorAll('.order-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Apply discount
+        function applyDiscount() {
+            const discountPercent = prompt('أدخل نسبة الخصم (%):', '10');
+            if (discountPercent && !isNaN(discountPercent)) {
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                discountAmount = subtotal * (parseFloat(discountPercent) / 100);
+                updateTotals();
+            }
+        }
+        
+        // Process payment
+        function processPayment() {
+            if (cart.length === 0) {
+                alert('السلة فارغة!');
+                return;
+            }
+            
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.14;
+            const total = subtotal + tax - discountAmount;
+            
+            // Create order summary
+            const orderSummary = {
+                orderType: orderType,
+                items: cart,
+                subtotal: subtotal,
+                tax: tax,
+                discount: discountAmount,
+                total: total,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Here you would send the order to the server
+            console.log('Order:', orderSummary);
+            
+            // For now, just show success message
+            alert(`تم إنشاء الطلب بنجاح!\nالإجمالي: ${total.toFixed(2)} جنيه`);
+            
+            // Clear cart after successful payment
+            cart = [];
+            discountAmount = 0;
+            updateCart();
+        }
+    </script>
+</body>
+</html>

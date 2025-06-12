@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الطلبات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .container-fluid {
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .status-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .status-tab {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .status-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .status-tab.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        .status-tab .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #f44336;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+        
+        .orders-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .order-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .order-time {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .order-type-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .order-type-badge.dine-in {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .order-type-badge.takeaway {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .order-type-badge.delivery {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .order-body {
+            padding: 20px;
+        }
+        
+        .order-customer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .order-items {
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        
+        .item-name {
+            flex: 1;
+        }
+        
+        .item-qty {
+            color: #666;
+            margin: 0 10px;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: #2196F3;
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .order-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-prepare {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-prepare:hover {
+            background: #f57c00;
+        }
+        
+        .btn-ready {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-ready:hover {
+            background: #388e3c;
+        }
+        
+        .btn-deliver {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .btn-deliver:hover {
+            background: #1976d2;
+        }
+        
+        .btn-complete {
+            background: #9e9e9e;
+            color: white;
+        }
+        
+        .btn-complete:hover {
+            background: #757575;
+        }
+        
+        .btn-cancel {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #d32f2f;
+        }
+        
+        .order-status-ribbon {
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            transform: rotate(45deg);
+            padding: 5px 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .status-new {
+            background: #2196f3;
+        }
+        
+        .status-preparing {
+            background: #ff9800;
+        }
+        
+        .status-ready {
+            background: #4caf50;
+        }
+        
+        .status-delivered {
+            background: #9e9e9e;
+        }
+        
+        /* Kitchen Display Mode */
+        .kitchen-mode {
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .kitchen-mode .order-card {
+            background: #2a2a2a;
+            border: 2px solid #444;
+        }
+        
+        .kitchen-mode .order-header {
+            background: #333;
+            border-bottom-color: #555;
+        }
+        
+        .kitchen-mode .order-number,
+        .kitchen-mode .order-time {
+            color: white;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .orders-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            .header, .filters-section, .status-tabs {
+                display: none;
+            }
+            
+            .order-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i class="fas fa-clipboard-list"></i> إدارة الطلبات</h1>
+                <div>
+                    <button class="btn btn-primary" onclick="toggleKitchenMode()">
+                        <i class="fas fa-tv"></i> وضع المطبخ
+                    </button>
+                    <button class="btn btn-success" onclick="refreshOrders()">
+                        <i class="fas fa-sync-alt"></i> تحديث
+                    </button>
+                    <a href="/simple-pos" class="btn btn-info">
+                        <i class="fas fa-cash-register"></i> نقطة البيع
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <div class="form-group">
+                    <label>التاريخ:</label>
+                    <input type="date" class="form-control" id="filter-date" value="">
+                </div>
+                <div class="form-group">
+                    <label>نوع الطلب:</label>
+                    <select class="form-select" id="filter-type">
+                        <option value="">الكل</option>
+                        <option value="dine-in">محلي</option>
+                        <option value="takeaway">سفري</option>
+                        <option value="delivery">توصيل</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>البحث:</label>
+                    <input type="text" class="form-control" id="filter-search" placeholder="رقم الطلب أو اسم العميل...">
+                </div>
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> تطبيق
+                </button>
+                <button class="btn btn-secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> مسح
+                </button>
+            </div>
+        </div>
+        
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <div class="status-tab active" onclick="filterByStatus('all')">
+                الكل
+                <span class="badge">25</span>
+            </div>
+            <div class="status-tab" onclick="filterByStatus('new')">
+                <i class="fas fa-clock"></i> جديد
+                <span class="badge">8</span>
+            </div>
+            <div class="status-tab" onclick="filterByStatus('preparing')">
+                <i class="fas fa-fire"></i> قيد التحضير
+                <span class="badge">5</span>
+            </div>
+            <div class="status-tab" onclick="filterByStatus('ready')">
+                <i class="fas fa-check-circle"></i> جاهز
+                <span class="badge">3</span>
+            </div>
+            <div class="status-tab" onclick="filterByStatus('delivered')">
+                <i class="fas fa-truck"></i> تم التوصيل
+                <span class="badge">9</span>
+            </div>
+        </div>
+        
+        <!-- Orders Container -->
+        <div class="orders-container" id="orders-container">
+            <!-- Orders will be loaded here -->
+        </div>
+        
+        <!-- Loading -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>جاري تحميل الطلبات...</p>
+        </div>
+    </div>
+    
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل الطلب</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="order-details-content">
+                    <!-- Order details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" onclick="printOrder()">
+                        <i class="fas fa-print"></i> طباعة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Orders data
+        let orders = [];
+        let currentFilter = 'all';
+        let isKitchenMode = false;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            document.getElementById('filter-date').value = new Date().toISOString().split('T')[0];
+            
+            loadOrders();
+            
+            // Auto refresh every 30 seconds
+            setInterval(refreshOrders, 30000);
+        });
+        
+        // Load orders
+        function loadOrders() {
+            showLoading(true);
+            
+            // Simulate loading orders (replace with actual API call)
+            setTimeout(() => {
+                orders = generateSampleOrders();
+                displayOrders();
+                updateStatusCounts();
+                showLoading(false);
+            }, 1000);
+        }
+        
+        // Generate sample orders
+        function generateSampleOrders() {
+            const orderTypes = ['dine-in', 'takeaway', 'delivery'];
+            const statuses = ['new', 'preparing', 'ready', 'delivered'];
+            const items = [
+                { name: 'برجر لحم', price: 35 },
+                { name: 'برجر دجاج', price: 32 },
+                { name: 'بيتزا مارجريتا', price: 45 },
+                { name: 'شاورما', price: 25 },
+                { name: 'بطاطس محمرة', price: 15 },
+                { name: 'سلطة', price: 20 },
+                { name: 'مشروب غازي', price: 10 },
+                { name: 'عصير', price: 15 }
+            ];
+            
+            const orders = [];
+            
+            for (let i = 1; i <= 25; i++) {
+                const orderType = orderTypes[Math.floor(Math.random() * orderTypes.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                
+                // Generate random items
+                const orderItems = [];
+                const itemCount = Math.floor(Math.random() * 4) + 1;
+                
+                for (let j = 0; j < itemCount; j++) {
+                    const item = items[Math.floor(Math.random() * items.length)];
+                    orderItems.push({
+                        ...item,
+                        quantity: Math.floor(Math.random() * 3) + 1
+                    });
+                }
+                
+                const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = subtotal * 0.14;
+                const total = subtotal + tax;
+                
+                orders.push({
+                    id: `ORD-2024-${String(i).padStart(5, '0')}`,
+                    orderType: orderType,
+                    status: status,
+                                        customer: `عميل ${i}`,
+                    phone: `010${Math.floor(Math.random() * 100000000)}`,
+                    table: orderType === 'dine-in' ? `T${Math.floor(Math.random() * 20) + 1}` : null,
+                    items: orderItems,
+                    subtotal: subtotal,
+                    tax: tax,
+                    total: total,
+                    createdAt: new Date(Date.now() - Math.random() * 7200000), // Random time in last 2 hours
+                    notes: Math.random() > 0.7 ? 'بدون بصل' : ''
+                });
+            }
+            
+            return orders.sort((a, b) => b.createdAt - a.createdAt);
+        }
+        
+        // Display orders
+        function displayOrders(filteredOrders = null) {
+            const container = document.getElementById('orders-container');
+            const ordersToDisplay = filteredOrders || orders;
+            
+            if (ordersToDisplay.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 col-12">
+                        <i class="fas fa-inbox" style="font-size: 60px; color: #ccc;"></i>
+                        <p class="mt-3">لا توجد طلبات</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = ordersToDisplay.map(order => {
+                const statusColor = getStatusColor(order.status);
+                const typeText = getOrderTypeText(order.orderType);
+                const timeDiff = getTimeDifference(order.createdAt);
+                
+                return `
+                    <div class="order-card ${isKitchenMode ? 'kitchen-card' : ''}" data-order-id="${order.id}">
+                        ${order.status !== 'delivered' ? `
+                            <div class="order-status-ribbon status-${order.status}">
+                                ${getStatusText(order.status)}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">${order.id}</div>
+                                <div class="order-time">
+                                    <i class="fas fa-clock"></i> ${timeDiff}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="order-type-badge ${order.orderType}">
+                                    ${typeText}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-body">
+                            <div class="order-customer">
+                                <i class="fas fa-user"></i>
+                                <span>${order.customer}</span>
+                                ${order.table ? `<span class="badge bg-info">طاولة ${order.table}</span>` : ''}
+                            </div>
+                            
+                            <div class="order-items">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <span class="item-name">${item.name}</span>
+                                        <span class="item-qty">×${item.quantity}</span>
+                                        <span class="item-price">${item.price * item.quantity} جنيه</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            ${order.notes ? `
+                                <div class="alert alert-warning py-2 mb-3">
+                                    <i class="fas fa-sticky-note"></i> ${order.notes}
+                                </div>
+                            ` : ''}
+                            
+                            <div class="order-total">
+                                <span>الإجمالي:</span>
+                                <span>${order.total.toFixed(2)} جنيه</span>
+                            </div>
+                            
+                            <div class="order-actions">
+                                ${getOrderActions(order)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add click event for order details
+            container.querySelectorAll('.order-card').forEach(card => {
+                card.addEventListener('dblclick', function() {
+                    const orderId = this.dataset.orderId;
+                    showOrderDetails(orderId);
+                });
+            });
+        }
+        
+        // Get order actions based on status
+        function getOrderActions(order) {
+            switch(order.status) {
+                case 'new':
+                    return `
+                        <button class="order-btn btn-prepare" onclick="updateOrderStatus('${order.id}', 'preparing')">
+                            <i class="fas fa-fire"></i> بدء التحضير
+                        </button>
+                        <button class="order-btn btn-cancel" onclick="cancelOrder('${order.id}')">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    `;
+                case 'preparing':
+                    return `
+                        <button class="order-btn btn-ready" onclick="updateOrderStatus('${order.id}', 'ready')">
+                            <i class="fas fa-check"></i> جاهز
+                        </button>
+                    `;
+                case 'ready':
+                    if (order.orderType === 'delivery') {
+                        return `
+                            <button class="order-btn btn-deliver" onclick="updateOrderStatus('${order.id}', 'delivered')">
+                                <i class="fas fa-truck"></i> تم التوصيل
+                            </button>
+                        `;
+                    } else {
+                        return `
+                            <button class="order-btn btn-complete" onclick="updateOrderStatus('${order.id}', 'delivered')">
+                                <i class="fas fa-check-double"></i> تم الاستلام
+                            </button>
+                        `;
+                    }
+                case 'delivered':
+                    return `
+                        <button class="order-btn btn-complete" disabled>
+                            <i class="fas fa-check-circle"></i> مكتمل
+                        </button>
+                    `;
+                default:
+                    return '';
+            }
+        }
+        
+        // Update order status
+        function updateOrderStatus(orderId, newStatus) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                
+                // Show notification
+                showNotification(`تم تحديث حالة الطلب ${orderId} إلى ${getStatusText(newStatus)}`);
+                
+                // Refresh display
+                applyCurrentFilters();
+                updateStatusCounts();
+                
+                // In real app, send update to server
+                // updateOrderOnServer(orderId, newStatus);
+            }
+        }
+        
+        // Cancel order
+        function cancelOrder(orderId) {
+            if (confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) {
+                const orderIndex = orders.findIndex(o => o.id === orderId);
+                if (orderIndex !== -1) {
+                    orders.splice(orderIndex, 1);
+                    showNotification(`تم إلغاء الطلب ${orderId}`, 'warning');
+                    applyCurrentFilters();
+                    updateStatusCounts();
+                }
+            }
+        }
+        
+        // Filter by status
+        function filterByStatus(status) {
+            currentFilter = status;
+            
+            // Update active tab
+            document.querySelectorAll('.status-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.status-tab').classList.add('active');
+            
+            applyCurrentFilters();
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const date = document.getElementById('filter-date').value;
+            const type = document.getElementById('filter-type').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            
+            let filtered = orders;
+            
+            // Filter by status
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(o => o.status === currentFilter);
+            }
+            
+            // Filter by type
+            if (type) {
+                filtered = filtered.filter(o => o.orderType === type);
+            }
+            
+            // Filter by search
+            if (search) {
+                filtered = filtered.filter(o => 
+                    o.id.toLowerCase().includes(search) ||
+                    o.customer.toLowerCase().includes(search) ||
+                    o.phone.includes(search)
+                );
+            }
+            
+            displayOrders(filtered);
+        }
+        
+        // Apply current filters
+        function applyCurrentFilters() {
+            applyFilters();
+        }
+        
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-search').value = '';
+            currentFilter = 'all';
+            
+            document.querySelectorAll('.status-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector('.status-tab').classList.add('active');
+            
+            displayOrders();
+        }
+        
+        // Update status counts
+        function updateStatusCounts() {
+            const counts = {
+                all: orders.length,
+                new: orders.filter(o => o.status === 'new').length,
+                preparing: orders.filter(o => o.status === 'preparing').length,
+                ready: orders.filter(o => o.status === 'ready').length,
+                delivered: orders.filter(o => o.status === 'delivered').length
+            };
+            
+            document.querySelectorAll('.status-tab').forEach((tab, index) => {
+                const status = ['all', 'new', 'preparing', 'ready', 'delivered'][index];
+                const badge = tab.querySelector('.badge');
+                if (badge) {
+                    badge.textContent = counts[status] || 0;
+                }
+            });
+        }
+        
+        // Show order details
+        function showOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+            const content = document.getElementById('order-details-content');
+            
+            content.innerHTML = `
+                <div class="order-details">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>معلومات الطلب</h6>
+                            <p><strong>رقم الطلب:</strong> ${order.id}</p>
+                            <p><strong>النوع:</strong> ${getOrderTypeText(order.orderType)}</p>
+                            <p><strong>الحالة:</strong> ${getStatusText(order.status)}</p>
+                            <p><strong>الوقت:</strong> ${order.createdAt.toLocaleString('ar-EG')}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>معلومات العميل</h6>
+                            <p><strong>الاسم:</strong> ${order.customer}</p>
+                            <p><strong>الهاتف:</strong> ${order.phone}</p>
+                            ${order.table ? `<p><strong>الطاولة:</strong> ${order.table}</p>` : ''}
+                        </div>
+                    </div>
+                    
+                    <h6>تفاصيل الطلب</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>الصنف</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                                <th>الإجمالي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${order.items.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>${item.price} جنيه</td>
+                                    <td>${item.price * item.quantity} جنيه</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3">المجموع الفرعي</th>
+                                <th>${order.subtotal.toFixed(2)} جنيه</th>
+                            </tr>
+                            <tr>
+                                <th colspan="3">الضريبة (14%)</th>
+                                <th>${order.tax.toFixed(2)} جنيه</th>
+                            </tr>
+                            <tr class="table-primary">
+                                <th colspan="3">الإجمالي</th>
+                                <th>${order.total.toFixed(2)} جنيه</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    ${order.notes ? `
+                        <div class="alert alert-info">
+                            <strong>ملاحظات:</strong> ${order.notes}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            modal.show();
+        }
+        
+        // Print order
+        function printOrder() {
+            window.print();
+        }
+        
+        // Toggle kitchen mode
+        function toggleKitchenMode() {
+            isKitchenMode = !isKitchenMode;
+            document.body.classList.toggle('kitchen-mode');
+            
+            if (isKitchenMode) {
+                // Filter only active orders in kitchen mode
+                const activeOrders = orders.filter(o => o.status !== 'delivered');
+                displayOrders(activeOrders);
+            } else {
+                applyCurrentFilters();
+            }
+        }
+        
+        // Refresh orders
+        function refreshOrders() {
+            showNotification('جاري تحديث الطلبات...', 'info');
+            loadOrders();
+        }
+        
+        // Show/hide loading
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('orders-container').style.display = show ? 'none' : 'grid';
+        }
+        
+        // Helper functions
+        function getStatusText(status) {
+            const statusMap = {
+                'new': 'جديد',
+                'preparing': 'قيد التحضير',
+                'ready': 'جاهز',
+                'delivered': 'تم التوصيل'
+            };
+            return statusMap[status] || status;
+        }
+        
+        function getStatusColor(status) {
+            const colorMap = {
+                'new': '#2196f3',
+                'preparing': '#ff9800',
+                'ready': '#4caf50',
+                'delivered': '#9e9e9e'
+            };
+            return colorMap[status] || '#666';
+        }
+        
+        function getOrderTypeText(type) {
+            const typeMap = {
+                'dine-in': 'محلي',
+                'takeaway': 'سفري',
+                'delivery': 'توصيل'
+            };
+            return typeMap[type] || type;
+        }
+        
+        function getTimeDifference(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            
+            if (minutes < 1) return 'الآن';
+            if (minutes < 60) return `منذ ${minutes} دقيقة`;
+            
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `منذ ${hours} ساعة`;
+            
+            const days = Math.floor(hours / 24);
+            return `منذ ${days} يوم`;
+        }
+        
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+                        notification.className = `alert alert-${type} notification-toast`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            // Add styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                min-width: 300px;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+            
+            .notification-toast {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                border-radius: 5px;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Sound notification for new orders
+        function playNotificationSound() {
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSd+zPLTizEGHmS/7OmWShAMTqzn77VmHAc9mtzrx3gZBSuEzfLOgjQIHmW/6+OaUg0PUqzl77FoHAc9mtztyHkZBSuE0PHPgjQHHGS+6+OaUg0PUqzl77BpHAU9l9zuyHkZBSuE0PLPgjUHHGS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjUHHGS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjUHHGS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjUHHGS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjUHHGS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHAU9l9zuyHkZBSuE0PLPgjQIHmS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm77BpHgU9mNzuyHkZBSuE0PLPgjQIHGS+6+OaUg0PUqvm76');
+            audio.play().catch(e => console.log('Could not play sound:', e));
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + R - Refresh
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                refreshOrders();
+            }
+            
+            // Ctrl/Cmd + K - Toggle kitchen mode
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                toggleKitchenMode();
+            }
+            
+            // Escape - Clear filters
+            if (e.key === 'Escape') {
+                clearFilters();
+            }
+        });
+        
+        // Check for new orders periodically
+        let lastOrderCount = 0;
+        
+        function checkForNewOrders() {
+            const newOrderCount = orders.filter(o => o.status === 'new').length;
+            
+            if (newOrderCount > lastOrderCount) {
+                playNotificationSound();
+                showNotification(`لديك ${newOrderCount - lastOrderCount} طلب جديد!`, 'info');
+            }
+            
+            lastOrderCount = newOrderCount;
+        }
+        
+        // Call this after loading orders
+        setInterval(checkForNewOrders, 5000);
+    </script>
+</body>
+</html>

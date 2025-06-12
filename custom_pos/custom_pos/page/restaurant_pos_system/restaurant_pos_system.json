@@ -1,0 +1,22 @@
+{
+ "content": null,
+ "creation": "2024-01-01",
+ "doctype": "Page",
+ "module": "Custom Pos",
+ "name": "restaurant-pos-system",
+ "owner": "Administrator",
+ "page_name": "Restaurant POS System",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "POS User"
+  }
+ ],
+ "standard": "Yes",
+ "title": "Restaurant POS"
+}

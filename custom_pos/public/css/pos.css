@@ -1,0 +1,64 @@
+/* POS Custom Styles */
+.pos-container {
+    font-family: 'Cairo', 'Arial', sans-serif;
+}
+
+/* RTL Support for Arabic */
+.pos-container[dir="rtl"] {
+    direction: rtl;
+}
+
+.pos-container[dir="rtl"] .cart-item {
+    flex-direction: row-reverse;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pos-container {
+        flex-direction: column;
+    }
+    
+    .pos-left, .pos-right {
+        width: 100%;
+    }
+    
+    .items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+/* Print Styles */
+@media print {
+    .page-head, .page-breadcrumbs {
+        display: none !important;
+    }
+}
+
+/* Animations */
+.item-card {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.loading::after {
+    content: "جاري التحميل...";
+    display: block;
+    margin-top: 10px;
+}
